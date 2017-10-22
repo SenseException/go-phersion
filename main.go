@@ -1,8 +1,10 @@
 package main
 
-import "fmt"
-import "os"
-import "flag"
+import (
+	"fmt"
+	"os"
+	"flag"
+)
 
 func main() {
 	// Define arguments
