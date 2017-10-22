@@ -2,7 +2,7 @@ package versioning
 
 import (
 	"testing"
-	"../../src/versioning"
+	"github.com/SenseException/go-phersion/src/versioning"
 )
 
 func TestGetWithMajor(t *testing.T) {
