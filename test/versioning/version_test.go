@@ -2,7 +2,7 @@ package versioning
 
 import (
 	"testing"
-	"github.com/SenseException/go-phersion/src/versioning"
+	"github.com/SenseException/go-phersion/versioning"
 )
 
 func TestGetWithMajor(t *testing.T) {
@@ -23,6 +23,10 @@ func TestGetWithLabel(t *testing.T) {
 
 func TestGetWithIdentifier(t *testing.T) {
 	expectedVersion(versioning.Version{Major: 2, Minor: 1, Patch: 9, Label: "beta", Identifier: 4}, "2.1.9-beta.4", t)
+}
+
+func TestGetWithoutLabel(t *testing.T) {
+	expectedVersion(versioning.Version{Major: 2, Minor: 1, Patch: 9, Identifier: 4}, "2.1.9", t)
 }
 
 func expectedVersion(version versioning.Version, expected string, t *testing.T) {
