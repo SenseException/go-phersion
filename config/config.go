@@ -1,8 +1,9 @@
-package file
+package config
 
 import (
 	"os"
 	"strings"
+	"path/filepath"
 )
 
 func Init(filePath string) {
@@ -13,14 +14,14 @@ func Exists(dirPath string) bool {
 	dirInfo, dirNotFound := os.Stat(dirPath)
 	fileInfo, fileNotFound := os.Stat(getFilePath(dirPath))
 
-	dirExists := os.IsExist(dirNotFound) || dirInfo.IsDir()
-	fileExists := os.IsExist(fileNotFound) || ! fileInfo.IsDir()
+	dirExists := nil == dirNotFound && dirInfo.IsDir()
+	fileExists := nil == fileNotFound && ! fileInfo.IsDir()
 
 	return dirExists && fileExists
 }
 
 func getFilePath(dirPath string) string {
-	dirPath = strings.TrimRight(dirPath, os.PathSeparator)
+	dirPath = strings.TrimRight(dirPath, string(os.PathSeparator))
 
-	return dirPath + os.PathSeparator + "config.json"
+	return filepath.FromSlash(dirPath + "/config.json")
 }
