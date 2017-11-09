@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"github.com/SenseException/go-phersion/config"
 )
 
 func main() {
@@ -11,10 +11,11 @@ func main() {
 	flag.Parse()
 
 	// Retrieve command
-	command := flag.Arg(0)
+	//command := flag.Arg(0)
 
 	var configPath string = *dirPath
 
-	fmt.Println(configPath)
-	fmt.Println(command)
+	if ! config.Exists(configPath) {
+		config.Init(configPath)
+	}
 }
