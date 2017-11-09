@@ -7,7 +7,7 @@ import (
 )
 
 /*
- Test for the method config.Exists
+ Tests for the method config.Exists
 */
 
 // Return false, because config directory doesn't exists
@@ -45,6 +45,30 @@ func TestConfigExist(t *testing.T) {
 
 	if false == config.Exists(dir) {
 		t.Errorf("A config directory structure was expected in %s", dir)
+	}
+
+	os.RemoveAll(dir)
+}
+
+/*
+ Tests for initializing config structure
+*/
+
+// Config structure is fully initialized
+func TestCreateConfig(t *testing.T) {
+	//os.Stdin
+
+	dir := os.TempDir() + "/test_directory"
+
+	config.Init(dir)
+
+	stat, err := os.Stat(dir + "/config.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if stat.IsDir() {
+		t.Error("config.json is not a file")
 	}
 
 	os.RemoveAll(dir)
