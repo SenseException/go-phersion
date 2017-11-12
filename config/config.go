@@ -5,19 +5,24 @@ import (
 	"strings"
 	"path/filepath"
 	"fmt"
+	"github.com/SenseException/go-phersion/versioning"
 )
 
-func Init(filePath string) {
+func Write(version versioning.Version, dirPath string) {
+	config, err := os.Create(getFilePath(dirPath))
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	config.Close()
+}
+
+func Init(dirPath string) {
 	isInit := scanBool("Initializing Go-Phersion version config? [Y/n]", "Y")
 
 	if (isInit) {
-		os.MkdirAll(filePath, 0744)
-		f, err := os.Create(filePath + "/config.json")
-
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		f.Close()
+		os.MkdirAll(dirPath, 0744)
+		Write(versioning.Version{Major: 1}, dirPath)
 	}
 }
 
