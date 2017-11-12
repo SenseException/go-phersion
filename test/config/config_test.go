@@ -4,6 +4,7 @@ import (
 	"testing"
 	"github.com/SenseException/go-phersion/config"
 	"os"
+	"io/ioutil"
 )
 
 /*
@@ -37,10 +38,7 @@ func TestConfigExist(t *testing.T) {
 	os.Mkdir(dir, 0777)
 
 	f, err := os.Create(dir + "/config.json")
-
-	if err != nil {
-		t.Error(err.Error())
-	}
+	assertNoError(err, t)
 	f.Close()
 
 	if false == config.Exists(dir) {
@@ -56,20 +54,40 @@ func TestConfigExist(t *testing.T) {
 
 // Config structure is fully initialized
 func TestCreateConfig(t *testing.T) {
-	//os.Stdin
-
 	dir := os.TempDir() + "/test_directory"
 
 	config.Init(dir)
 
 	stat, err := os.Stat(dir + "/config.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
+	assertNoError(err, t)
 
 	if stat.IsDir() {
 		t.Error("config.json is not a file")
 	}
 
 	os.RemoveAll(dir)
+}
+
+// Expected json config is created
+func TestCreateJson(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+
+	config.Init(dir)
+
+	configJson, err := ioutil.ReadFile(dir + "/config.json")
+	assertNoError(err, t)
+
+	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0}`
+
+	if string(configJson) != expected {
+		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
+	}
+
+	os.RemoveAll(dir)
+}
+
+func assertNoError(err error, t *testing.T) {
+	if err != nil {
+		t.Error(err.Error())
+	}
 }

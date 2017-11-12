@@ -6,15 +6,19 @@ import (
 	"path/filepath"
 	"fmt"
 	"github.com/SenseException/go-phersion/versioning"
+	"io/ioutil"
+	"encoding/json"
 )
 
 func Write(version versioning.Version, dirPath string) {
-	config, err := os.Create(getFilePath(dirPath))
+	jsonConfig, _ := json.Marshal(createConfig(version))
+	fmt.Println(string(jsonConfig))
+
+	err := ioutil.WriteFile(getFilePath(dirPath), jsonConfig, 0744)
 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	config.Close()
 }
 
 func Init(dirPath string) {
@@ -47,4 +51,22 @@ func scanBool(question string, preset string) bool {
 	fmt.Scanf("%s", &preset)
 
 	return "Y" == preset || "y" == preset
+}
+
+func createConfig(version versioning.Version) configJson {
+	return configJson{
+		Major: version.Major,
+		Minor: version.Minor,
+		Patch: version.Patch,
+		Label: version.Label,
+		Identifier: version.Identifier,
+	}
+}
+
+type configJson struct {
+	Major      int		`json:"major"`
+	Minor      int		`json:"minor"`
+	Patch      int		`json:"patch"`
+	Label      string	`json:"label"`
+	Identifier int		`json:"identifier"`
 }
