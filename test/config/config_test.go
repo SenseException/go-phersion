@@ -5,6 +5,7 @@ import (
 	"github.com/SenseException/go-phersion/config"
 	"os"
 	"io/ioutil"
+	"github.com/SenseException/go-phersion/versioning"
 )
 
 /*
@@ -75,6 +76,34 @@ func TestCreateJson(t *testing.T) {
 	config.Init(dir)
 
 	configJson, err := ioutil.ReadFile(dir + "/config.json")
+	assertNoError(err, t)
+
+	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0}`
+
+	if string(configJson) != expected {
+		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
+	}
+
+	os.RemoveAll(dir)
+}
+
+/*
+ Tests for writing config
+*/
+
+// Expected json config was written
+func TestWriteJson(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+	conf := dir + "/config.json"
+
+	// Create config dir with empty config.json that will be overridden.
+	var emptyContent []byte
+	os.MkdirAll(dir, 0744)
+	ioutil.WriteFile(conf, emptyContent, 0744)
+
+	config.Write(versioning.Version{Major: 1}, dir)
+
+	configJson, err := ioutil.ReadFile(conf)
 	assertNoError(err, t)
 
 	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0}`
