@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 )
 
-func Write(version versioning.Version, dirPath string) {
+func Write(version versioning.Version, dirPath string) error {
 	jsonConfig, _ := json.Marshal(createConfig(version))
 	fmt.Println(string(jsonConfig))
 
@@ -19,15 +19,20 @@ func Write(version versioning.Version, dirPath string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
+	return err
 }
 
-func Init(dirPath string) {
+func Init(dirPath string) error {
 	isInit := scanBool("Initializing Go-Phersion version config? [Y/n]", "Y")
+	var err error = nil
 
 	if (isInit) {
 		os.MkdirAll(dirPath, 0744)
-		Write(versioning.Version{Major: 1}, dirPath)
+		err = Write(versioning.Version{Major: 1}, dirPath)
 	}
+
+	return err
 }
 
 func Exists(dirPath string) bool {

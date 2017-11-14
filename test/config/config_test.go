@@ -87,6 +87,20 @@ func TestCreateJson(t *testing.T) {
 	os.RemoveAll(dir)
 }
 
+// Expected error on initializing config
+func TestCreateJsonError(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+	os.MkdirAll(dir, 0000)
+
+	err := config.Init(dir)
+
+	if err == nil {
+		t.Error("An error was expected on initializing config")
+	}
+
+	os.RemoveAll(dir)
+}
+
 /*
  Tests for writing config
 */
@@ -110,6 +124,21 @@ func TestWriteJson(t *testing.T) {
 
 	if string(configJson) != expected {
 		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
+	}
+
+	os.RemoveAll(dir)
+}
+
+// Expected error on writing config
+func TestWriteJsonError(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+
+	os.MkdirAll(dir, 0000)
+
+	err := config.Write(versioning.Version{Major: 1}, dir)
+
+	if err == nil {
+		t.Error("An error was expected on writing config file")
 	}
 
 	os.RemoveAll(dir)
