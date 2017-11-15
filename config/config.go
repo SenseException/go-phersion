@@ -12,7 +12,6 @@ import (
 
 func Write(version versioning.Version, dirPath string) error {
 	jsonConfig, _ := json.Marshal(createConfig(version))
-	fmt.Println(string(jsonConfig))
 
 	err := ioutil.WriteFile(getFilePath(dirPath), jsonConfig, 0744)
 
@@ -21,6 +20,15 @@ func Write(version versioning.Version, dirPath string) error {
 	}
 
 	return err
+}
+
+func Read(dirPath string) (versioning.Version, error) {
+	fileContent, _ := ioutil.ReadFile(getFilePath(dirPath))
+
+	config := configJson{}
+	err := json.Unmarshal(fileContent, &config)
+
+	return createVersion(config), err
 }
 
 func Init(dirPath string) error {
@@ -74,4 +82,14 @@ type configJson struct {
 	Patch      int		`json:"patch"`
 	Label      string	`json:"label"`
 	Identifier int		`json:"identifier"`
+}
+
+func createVersion(config configJson) versioning.Version {
+	return versioning.Version{
+		Major: config.Major,
+		Minor: config.Minor,
+		Patch: config.Patch,
+		Label: config.Label,
+		Identifier: config.Identifier,
+	}
 }

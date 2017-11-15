@@ -1,11 +1,11 @@
 package config
 
 import (
-	"testing"
 	"github.com/SenseException/go-phersion/config"
-	"os"
-	"io/ioutil"
 	"github.com/SenseException/go-phersion/versioning"
+	"io/ioutil"
+	"os"
+	"testing"
 )
 
 /*
@@ -143,6 +143,64 @@ func TestWriteJsonError(t *testing.T) {
 
 	os.RemoveAll(dir)
 }
+
+/*
+ Tests for the Read method
+*/
+
+// Expect correct version from Read
+func TestRead(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+	conf := dir + "/config.json"
+
+	json := []byte(`{"major":1,"minor":0,"patch":0,"label":"beta","identifier":2}`)
+	os.MkdirAll(dir, 0744)
+	ioutil.WriteFile(conf, json, 0744)
+
+	version, err := config.Read(dir)
+
+	assertNoError(err, t)
+
+	expected := "1.0.0-beta2"
+	if version.Get() != expected {
+		t.Errorf("Wrong version %s. Expected: %s", version.Get(), expected)
+	}
+
+	os.RemoveAll(dir)
+}
+
+// Expect ReadFile fails
+func TestReadError(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+
+	_, err := config.Read(dir)
+
+	if err == nil {
+		t.Error("An error was expected on reading config file")
+	}
+}
+
+// Expect json unmarshal fails
+func TestReadParseConfigError(t *testing.T) {
+	dir := os.TempDir() + "/test_directory"
+	conf := dir + "/config.json"
+
+	content := []byte(`{`)
+	os.MkdirAll(dir, 0744)
+	ioutil.WriteFile(conf, content, 0744)
+
+	_, err := config.Read(dir)
+
+	if err == nil {
+		t.Error("An error was expected on reading config file")
+	}
+
+	os.RemoveAll(dir)
+}
+
+/*
+ Helper methods
+*/
 
 func assertNoError(err error, t *testing.T) {
 	if err != nil {
