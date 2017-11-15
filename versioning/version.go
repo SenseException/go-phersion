@@ -27,7 +27,6 @@ func (v *Version) Get() string {
 		versionBuffer.WriteString(v.Label)
 
 		if 0 != v.Identifier {
-			versionBuffer.WriteString(".")
 			versionBuffer.WriteString(strconv.Itoa(v.Identifier))
 		}
 	}

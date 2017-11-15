@@ -22,7 +22,7 @@ func TestGetWithLabel(t *testing.T) {
 }
 
 func TestGetWithIdentifier(t *testing.T) {
-	expectedVersion(versioning.Version{Major: 2, Minor: 1, Patch: 9, Label: "beta", Identifier: 4}, "2.1.9-beta.4", t)
+	expectedVersion(versioning.Version{Major: 2, Minor: 1, Patch: 9, Label: "beta", Identifier: 4}, "2.1.9-beta4", t)
 }
 
 func TestGetWithoutLabel(t *testing.T) {
