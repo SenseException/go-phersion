@@ -4,6 +4,8 @@ import (
 	"github.com/SenseException/go-phersion/config"
 	"gopkg.in/urfave/cli.v1"
 	"os"
+	"errors"
+	"fmt"
 )
 
 func main() {
@@ -14,12 +16,12 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "go-phersion"
 	app.Author = "Claudio Zizza"
-	app.Description = "Managing versions in builds of projects"
+	app.Usage = "Managing versions in builds of projects"
 
 
 	// Define arguments of go-phersion
 	app.Flags = []cli.Flag {
-		cli.StringFlag{
+		cli.StringFlag {
 			Name: "config, c",
 			Value: "./.go-pherson",
 			Usage: "Path to version config file directory",
@@ -35,6 +37,20 @@ func main() {
 			Action: func(c *cli.Context) error {
 				if ! config.Exists(configPath) {
 					config.Init(configPath)
+				}
+
+				return nil
+			},
+		},
+		{
+			Name: "bump",
+			Usage: "Increments the version of the project",
+			Action: func(c *cli.Context) error {
+				if ! config.Exists(configPath) {
+					err := errors.New("No project config was initialized. Use: go-phersion init")
+					fmt.Println(err)
+
+					return err
 				}
 
 				return nil
