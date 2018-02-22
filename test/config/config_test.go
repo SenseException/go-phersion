@@ -78,7 +78,7 @@ func TestCreateJson(t *testing.T) {
 	configJson, err := ioutil.ReadFile(dir + "/config.json")
 	assertNoError(err, t)
 
-	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0}`
+	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0,"version_types":[]}`
 
 	if string(configJson) != expected {
 		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
@@ -120,7 +120,7 @@ func TestWriteJson(t *testing.T) {
 	configJson, err := ioutil.ReadFile(conf)
 	assertNoError(err, t)
 
-	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0}`
+	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0,"version_types":[]}`
 
 	if string(configJson) != expected {
 		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
@@ -153,7 +153,7 @@ func TestRead(t *testing.T) {
 	dir := os.TempDir() + "/test_directory"
 	conf := dir + "/config.json"
 
-	json := []byte(`{"major":1,"minor":0,"patch":0,"label":"beta","identifier":2}`)
+	json := []byte(`{"major":1,"minor":0,"patch":0,"label":"beta","identifier":2,"version_types":[]}`)
 	os.MkdirAll(dir, 0744)
 	ioutil.WriteFile(conf, json, 0744)
 

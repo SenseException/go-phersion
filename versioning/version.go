@@ -6,11 +6,12 @@ import (
 )
 
 type Version struct {
-	Major      int
-	Minor      int
-	Patch      int
-	Label      string
-	Identifier int
+	Major        int
+	Minor        int
+	Patch        int
+	Label        string
+	Identifier   int
+	VersionTypes []string
 }
 
 func (v *Version) Get() string {

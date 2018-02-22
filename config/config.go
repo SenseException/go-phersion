@@ -67,21 +67,28 @@ func scanBool(question string, preset string) bool {
 }
 
 func createConfig(version versioning.Version) configJson {
+	var versionType []string = version.VersionTypes
+	if nil == version.VersionTypes {
+		versionType = []string{}
+	}
+
 	return configJson{
 		Major: version.Major,
 		Minor: version.Minor,
 		Patch: version.Patch,
 		Label: version.Label,
 		Identifier: version.Identifier,
+		VersionTypes: versionType,
 	}
 }
 
 type configJson struct {
-	Major      int		`json:"major"`
-	Minor      int		`json:"minor"`
-	Patch      int		`json:"patch"`
-	Label      string	`json:"label"`
-	Identifier int		`json:"identifier"`
+	Major        int	`json:"major"`
+	Minor        int	`json:"minor"`
+	Patch        int	`json:"patch"`
+	Label        string     `json:"label"`
+	Identifier   int	`json:"identifier"`
+	VersionTypes []string	`json:"version_types"`
 }
 
 func createVersion(config configJson) versioning.Version {
@@ -91,5 +98,6 @@ func createVersion(config configJson) versioning.Version {
 		Patch: config.Patch,
 		Label: config.Label,
 		Identifier: config.Identifier,
+		VersionTypes: config.VersionTypes,
 	}
 }
