@@ -15,10 +15,6 @@ func Write(version versioning.Version, dirPath string) error {
 
 	err := ioutil.WriteFile(getFilePath(dirPath), jsonConfig, 0744)
 
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
 	return err
 }
 
