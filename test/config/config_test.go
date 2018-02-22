@@ -115,12 +115,12 @@ func TestWriteJson(t *testing.T) {
 	os.MkdirAll(dir, 0744)
 	ioutil.WriteFile(conf, emptyContent, 0744)
 
-	config.Write(versioning.Version{Major: 1}, dir)
+	config.Write(versioning.Version{Major: 1, Minor: 0, Patch: 0, Label: "", Identifier: 0, VersionTypes: []string{"foo"}}, dir)
 
 	configJson, err := ioutil.ReadFile(conf)
 	assertNoError(err, t)
 
-	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0,"version_types":[]}`
+	var expected string = `{"major":1,"minor":0,"patch":0,"label":"","identifier":0,"version_types":["foo"]}`
 
 	if string(configJson) != expected {
 		t.Errorf("Expected that config %s is equal to %s", configJson, expected)
@@ -153,7 +153,7 @@ func TestRead(t *testing.T) {
 	dir := os.TempDir() + "/test_directory"
 	conf := dir + "/config.json"
 
-	json := []byte(`{"major":1,"minor":0,"patch":0,"label":"beta","identifier":2,"version_types":[]}`)
+	json := []byte(`{"major":1,"minor":0,"patch":0,"label":"beta","identifier":2,"version_types":["foo"]}`)
 	os.MkdirAll(dir, 0744)
 	ioutil.WriteFile(conf, json, 0744)
 
@@ -163,6 +163,10 @@ func TestRead(t *testing.T) {
 
 	expected := "1.0.0-beta2"
 	if version.Get() != expected {
+		t.Errorf("Wrong version %s. Expected: %s", version.Get(), expected)
+	}
+
+	if len(version.VersionTypes) != 1 || version.VersionTypes[0] != "foo" {
 		t.Errorf("Wrong version %s. Expected: %s", version.Get(), expected)
 	}
 
