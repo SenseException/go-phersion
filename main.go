@@ -56,6 +56,35 @@ func main() {
 				return nil
 			},
 		},
+		{
+			Name: "add-type",
+			Usage: "Adds a new version type, that will contain the version in a config file usable for your project",
+			Action: func(c *cli.Context) error {
+				if ! config.Exists(configPath) {
+					err := errors.New("No project config was initialized. Use: go-phersion init")
+					fmt.Println(err)
+
+					return err
+				}
+
+				var versionType string = c.Args().Get(0)
+				version, err := config.Read(configPath)
+				if nil != err {
+					return err
+				}
+
+				version.AddType(versionType)
+
+				err = config.Write(version, configPath)
+				if nil != err {
+					return err
+				}
+
+				fmt.Println("Version type", versionType, "was added")
+
+				return nil
+			},
+		},
 	}
 
 	app.Run(os.Args)
