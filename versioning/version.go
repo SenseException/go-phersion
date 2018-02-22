@@ -34,3 +34,7 @@ func (v *Version) Get() string {
 
 	return versionBuffer.String()
 }
+
+func (v *Version) AddType(versionType string) {
+	v.VersionTypes = append(v.VersionTypes, versionType)
+}

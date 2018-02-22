@@ -36,3 +36,18 @@ func expectedVersion(version versioning.Version, expected string, t *testing.T) 
 		t.Errorf("Expected version was %s, but got %s", expected, versionStr)
 	}
 }
+
+func TestAddType(t *testing.T) {
+	version := versioning.Version{}
+	version.AddType("foo")
+
+	expected := []string{"foo"}
+
+	if len(expected) != len(version.VersionTypes) {
+		t.Error("Version type has not the expected length")
+	}
+
+	if expected[0] != version.VersionTypes[0] {
+		t.Error("Version type foo was not added")
+	}
+}
