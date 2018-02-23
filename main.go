@@ -4,13 +4,21 @@ import (
 	"github.com/SenseException/go-phersion/config"
 	"gopkg.in/urfave/cli.v1"
 	"os"
-	"errors"
 	"fmt"
 )
 
 func main() {
 	// path to the go-phersion config file
 	var configPath string
+
+	// Check if config path exists
+	configExists := func(configPath string) error {
+		if ! config.Exists(configPath) {
+			return cli.NewExitError("No project config was initialized. Use: go-phersion init", 1)
+		}
+
+		return nil
+	}
 
 	// Create cli API of go-phersion
 	app := cli.NewApp()
@@ -46,10 +54,8 @@ func main() {
 			Name: "bump",
 			Usage: "Increments the version of the project",
 			Action: func(c *cli.Context) error {
-				if ! config.Exists(configPath) {
-					err := errors.New("No project config was initialized. Use: go-phersion init")
-					fmt.Println(err)
-
+				err := configExists(configPath)
+				if nil != err {
 					return err
 				}
 
@@ -59,15 +65,18 @@ func main() {
 		{
 			Name: "add-type",
 			Usage: "Adds a new version type, that will contain the version in a config file usable for your project",
+			ArgsUsage: "version-type",
 			Action: func(c *cli.Context) error {
-				if ! config.Exists(configPath) {
-					err := errors.New("No project config was initialized. Use: go-phersion init")
-					fmt.Println(err)
-
+				err := configExists(configPath)
+				if nil != err {
 					return err
 				}
 
 				var versionType string = c.Args().Get(0)
+				if "" == versionType {
+					return cli.NewExitError("Version type argument is missing", 2)
+				}
+
 				version, err := config.Read(configPath)
 				if nil != err {
 					return err
@@ -88,15 +97,18 @@ func main() {
 		{
 			Name: "remove-type",
 			Usage: "Removed an existing version type from your configuration",
+			ArgsUsage: "version-type",
 			Action: func(c *cli.Context) error {
-				if ! config.Exists(configPath) {
-					err := errors.New("No project config was initialized. Use: go-phersion init")
-					fmt.Println(err)
-
+				err := configExists(configPath)
+				if nil != err {
 					return err
 				}
 
 				var versionType string = c.Args().Get(0)
+				if "" == versionType {
+					return cli.NewExitError("Version type argument is missing", 2)
+				}
+
 				version, err := config.Read(configPath)
 				if nil != err {
 					return err
