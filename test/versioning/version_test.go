@@ -66,3 +66,18 @@ func TestRemoveType(t *testing.T) {
 		t.Error("Version type foo was not removed properly")
 	}
 }
+
+func TestRemoveTypeThatDoesntExist(t *testing.T) {
+	version := versioning.Version{Major: 1, Minor: 0, Patch: 0, Label: "", Identifier: 0, VersionTypes: []string{"foo", "baz"}}
+	version.RemoveType("bar")
+
+	expected := []string{"foo", "baz"}
+
+	if len(expected) != len(version.VersionTypes) {
+		t.Error("Version type has not the expected length")
+	}
+
+	if expected[0] != version.VersionTypes[0] || expected[1] != version.VersionTypes[1] {
+		t.Error("Version type foo was not removed properly")
+	}
+}

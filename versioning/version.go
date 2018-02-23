@@ -36,11 +36,12 @@ func (v *Version) Get() string {
 }
 
 func (v *Version) AddType(versionType string) {
+	// TODO prevent duplications of version types
 	v.VersionTypes = append(v.VersionTypes, versionType)
 }
 
 func (v *Version) RemoveType(versionType string) {
-	for i := 0; i <= len(v.VersionTypes); i++  {
+	for i := 0; i < len(v.VersionTypes); i++  {
 		if v.VersionTypes[i] == versionType {
 			v.VersionTypes = append(v.VersionTypes[:i], v.VersionTypes[i+1:]...)
 			break
