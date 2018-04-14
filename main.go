@@ -25,6 +25,10 @@ func main() {
 	app.Name = "go-phersion"
 	app.Author = "Claudio Zizza"
 	app.Usage = "Managing versions in builds of projects"
+	app.EnableBashCompletion = true
+	app.CommandNotFound = func(c *cli.Context, command string) {
+		fmt.Println("Unknown command: ", command)
+	}
 
 
 	// Define arguments of go-phersion
