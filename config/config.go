@@ -88,7 +88,7 @@ type configJson struct {
 }
 
 func createVersion(config configJson) versioning.Version {
-	return versioning.Version{
+	return versioning.Version {
 		Major: config.Major,
 		Minor: config.Minor,
 		Patch: config.Patch,

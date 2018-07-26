@@ -5,6 +5,7 @@ import (
 	"gopkg.in/urfave/cli.v1"
 	"os"
 	"fmt"
+	"github.com/SenseException/go-phersion/versioning"
 )
 
 func main() {
@@ -41,6 +42,34 @@ func main() {
 		},
 	}
 
+	// TODO Move console logic outside of main.go
+	typeHandler := func(versionType string, processType func(version *versioning.Version, versionType string), message string) error {
+		err := configExists(configPath)
+		if nil != err {
+			return err
+		}
+
+		if "" == versionType {
+			return cli.NewExitError("Version type argument is missing", 2)
+		}
+
+		version, err := config.Read(configPath)
+		if nil != err {
+			return err
+		}
+
+		processType(&version, versionType)
+
+		err = config.Write(version, configPath)
+		if nil != err {
+			return err
+		}
+
+		fmt.Println("Version type", versionType, message)
+
+		return nil
+	}
+
 	// Create commands of go-phersion
 	app.Commands = []cli.Command {
 		{
@@ -71,31 +100,9 @@ func main() {
 			Usage: "Adds a new version type, that will contain the version in a config file usable for your project",
 			ArgsUsage: "version-type",
 			Action: func(c *cli.Context) error {
-				err := configExists(configPath)
-				if nil != err {
-					return err
-				}
-
-				var versionType string = c.Args().Get(0)
-				if "" == versionType {
-					return cli.NewExitError("Version type argument is missing", 2)
-				}
-
-				version, err := config.Read(configPath)
-				if nil != err {
-					return err
-				}
-
-				version.AddType(versionType)
-
-				err = config.Write(version, configPath)
-				if nil != err {
-					return err
-				}
-
-				fmt.Println("Version type", versionType, "was added")
-
-				return nil
+				return typeHandler(c.Args().Get(0), func(version *versioning.Version, versionType string) {
+					version.AddType(versionType)
+				}, "was added")
 			},
 		},
 		{
@@ -103,31 +110,9 @@ func main() {
 			Usage: "Removed an existing version type from your configuration",
 			ArgsUsage: "version-type",
 			Action: func(c *cli.Context) error {
-				err := configExists(configPath)
-				if nil != err {
-					return err
-				}
-
-				var versionType string = c.Args().Get(0)
-				if "" == versionType {
-					return cli.NewExitError("Version type argument is missing", 2)
-				}
-
-				version, err := config.Read(configPath)
-				if nil != err {
-					return err
-				}
-
-				version.RemoveType(versionType)
-
-				err = config.Write(version, configPath)
-				if nil != err {
-					return err
-				}
-
-				fmt.Println("Version type", versionType, "was removed")
-
-				return nil
+				return typeHandler(c.Args().Get(0), func(version *versioning.Version, versionType string) {
+					version.RemoveType(versionType)
+				}, "was removed")
 			},
 		},
 	}
